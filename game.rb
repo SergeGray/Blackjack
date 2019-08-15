@@ -5,8 +5,9 @@ class Game
 
   class << self
     attr_accessor :deck
-    @deck = Card.deck.shuffle
   end
+
+  @deck = Card.deck.shuffle
 
   def initialize(player1, player2, bet = 10)
     @player1 = player1
@@ -24,8 +25,8 @@ class Game
     @playing = other_player(@playing)
   end
 
-  def add_card
-    @playing.hand << @deck.pop
+  def hit
+    @playing.hand << self.class.deck.pop
     open_cards if @playing.score > 21
     next_turn
   end
@@ -36,12 +37,8 @@ class Game
     reshuffle_deck
   end
 
-  def tally
-    winner ? pay(winner) : refund
-  end
-
   def winner
-    players.select do |player|
+    players.find do |player|
       player.effective_score > other_player(player).effective_score
     end
   end
@@ -49,18 +46,22 @@ class Game
   def start
     players.each do |player|
       player.hand = self.class.deck.pop(2)
-      player.wallet -= bet
-      @bank += bet
+      player.wallet -= @bet
+      @bank += @bet
     end
   end
 
-  alias skip_turn next_turn
+  alias stand next_turn
 
   private
 
+  def tally
+    winner ? pay(winner) : refund
+  end
+
   def reshuffle_deck
     players.each { |player| self.class.deck += player.hand.pop(3) }
-    deck.shuffle
+    self.class.deck.shuffle
   end
 
   def other_player(player)
@@ -68,12 +69,12 @@ class Game
   end
 
   def pay(player)
-    @bank -= bet * 2
-    player.wallet += bet * 2
+    @bank -= @bet * 2
+    player.wallet += @bet * 2
   end
 
   def refund
-    @bank -= bet * 2
+    @bank -= @bet * 2
     players.each { |player| player.wallet += bet }
   end
 end

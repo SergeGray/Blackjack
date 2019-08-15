@@ -10,7 +10,7 @@ class Player
 
   def score
     @hand.reduce(0) do |score, card|
-      score + card.ace? ? ace_count(score) : card.value
+      score + (card.ace? ? ace_count(score) : card.value)
     end
   end
 

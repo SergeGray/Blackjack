@@ -30,6 +30,10 @@ class Player
     hidden? ? @hand.map { '***' } : @hand
   end
 
+  def hand_full?
+    @hand.size == 3
+  end
+
   private
 
   def ace_count(score)

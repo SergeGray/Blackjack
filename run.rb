@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative 'main.rb'
+require_relative 'blackjack.rb'
 
-main = Main.new
-main.main
+blackjack = Blackjack.new
+blackjack.main

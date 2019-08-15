@@ -2,15 +2,16 @@
 
 require_relative 'card.rb'
 require_relative 'player.rb'
+require_relative 'dealer.rb'
 require_relative 'game.rb'
 
-class Main
+class Blackjack
   MENU = ['0. Open cards', '1. Stand', '2. Hit'].freeze
   OPTIONS = %i[open_cards stand hit].freeze
 
   def initialize
     @player = Player.new('Player')
-    @dealer = Player.new('Dealer', 1_000_000, hidden: true)
+    @dealer = Dealer.new
     @game = Game.new(@player, @dealer)
     @game.start
   end
@@ -51,7 +52,7 @@ class Main
   end
 
   def play_again
-    puts 'Input y to play again or any other key to exit'
+    puts 'Input y to play again or anything else to exit'
     abort if gets.chomp !~ /\s*y\s*/i
     @game.start
   end

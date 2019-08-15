@@ -26,10 +26,7 @@ class Game
   end
 
   def hit
-    unless @playing.hand_full?
-      @playing.hand << self.class.deck.pop
-      open_cards if @playing.score > 21
-    end
+    @playing.hand << self.class.deck.pop unless @playing.hand_full?
     next_turn
   end
 

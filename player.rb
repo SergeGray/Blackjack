@@ -1,11 +1,14 @@
 # frozen_string_literal: true
 
 class Player
-  attr_accessor :hand, :wallet
+  attr_accessor :hand, :cash
+  attr_reader :name
 
-  def initialize(wallet = 100, hidden = false)
-    @wallet = wallet
-    @hidden = hidden
+  def initialize(name, cash = 100, options = {})
+    @name = name
+    @cash = cash
+    @hidden = options[:hidden] || false
+    @hand = []
   end
 
   def score
@@ -26,8 +29,16 @@ class Player
     @hidden = false
   end
 
+  def hide_hand
+    @hidden = true
+  end
+
   def view_hand
-    hidden? ? @hand.map { '***' } : @hand
+    (hidden? ? @hand.map { '***' } : @hand).join(' ')
+  end
+
+  def view_score
+    hidden? ? '**' : score
   end
 
   def hand_full?

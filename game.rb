@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
 class Game
-  attr_reader :playing
+  attr_reader :playing, :bank
 
   class << self
     attr_accessor :deck
   end
 
-  @deck = Card.deck.shuffle
+  @deck = Card.deck
 
   def initialize(player1, player2, bet = 10)
     @player1 = player1
@@ -34,9 +34,8 @@ class Game
   end
 
   def open_cards
-    players.each(&:show_hand)
+    @revealed = players.select(&:hidden?).each(&:show_hand)
     tally
-    reshuffle_deck
   end
 
   def winner
@@ -46,12 +45,21 @@ class Game
   end
 
   def start
+    hide_cards
+    shuffle_deck
+    @playing = @player1
     players.each do |player|
       player.hand = self.class.deck.pop(2)
-      player.wallet -= @bet
+      player.cash -= @bet
       @bank += @bet
     end
   end
+
+  def over?
+    @bank.zero?
+  end
+
+  def do_nothing; end
 
   alias stand next_turn
 
@@ -61,9 +69,13 @@ class Game
     winner ? pay(winner) : refund
   end
 
-  def reshuffle_deck
+  def hide_cards
+    @revealed&.each(&:hide_hand)
+  end
+
+  def shuffle_deck
     players.each { |player| self.class.deck += player.hand.pop(3) }
-    self.class.deck.shuffle
+    self.class.deck.shuffle!
   end
 
   def other_player(player)
@@ -72,11 +84,11 @@ class Game
 
   def pay(player)
     @bank -= @bet * 2
-    player.wallet += @bet * 2
+    player.cash += @bet * 2
   end
 
   def refund
     @bank -= @bet * 2
-    players.each { |player| player.wallet += bet }
+    players.each { |player| player.cash += @bet }
   end
 end

@@ -5,16 +5,8 @@ require_relative 'player.rb'
 require_relative 'game.rb'
 
 class Main
-  MENU = [
-    '0. Open cards',
-    '1. Stand',
-    '2. Hit'
-  ].freeze
-  OPTIONS = %i[
-    open_cards
-    stand
-    hit
-  ].freeze
+  MENU = ['0. Open cards', '1. Stand', '2. Hit'].freeze
+  OPTIONS = %i[open_cards stand hit].freeze
 
   def initialize
     @player = Player.new('Player')
@@ -24,7 +16,7 @@ class Main
   end
 
   def main
-    @game.over? ? play_again : action
+    @game.over? ? winner_notice : action
     main
   end
 
@@ -52,9 +44,13 @@ class Main
     @dealer.score < 17 ? @game.hit : @game.stand
   end
 
-  def play_again
+  def winner_notice
     puts game_state
     puts @game.winner ? "#{@game.winner.name} wins!" : 'Tie!'
+    play_again
+  end
+
+  def play_again
     puts 'Input y to play again or any other key to exit'
     abort if gets.chomp !~ /\s*y\s*/i
     @game.start

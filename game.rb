@@ -26,10 +26,10 @@ class Game
   end
 
   def hit
-    return false if @playing.hand_full?
-
-    @playing.hand << self.class.deck.pop
-    open_cards if @playing.score > 21
+    unless @playing.hand_full?
+      @playing.hand << self.class.deck.pop
+      open_cards if @playing.score > 21
+    end
     next_turn
   end
 
@@ -48,11 +48,7 @@ class Game
     hide_cards
     shuffle_deck
     @playing = @player1
-    players.each do |player|
-      player.hand = self.class.deck.pop(2)
-      player.cash -= @bet
-      @bank += @bet
-    end
+    arrange_table
   end
 
   def over?
@@ -76,6 +72,14 @@ class Game
   def shuffle_deck
     players.each { |player| self.class.deck += player.hand.pop(3) }
     self.class.deck.shuffle!
+  end
+
+  def arrange_table
+    players.each do |player|
+      player.hand = self.class.deck.pop(2)
+      player.cash -= @bet
+      @bank += @bet
+    end
   end
 
   def other_player(player)

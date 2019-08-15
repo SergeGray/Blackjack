@@ -8,21 +8,21 @@ class Card
     spades: "\u2663"
   }.freeze
   NOMINALS = {
-    two: {string: ' 2', value: 2},
-    three: {string: ' 3', value: 3},
-    four: {string: ' 4', value: 4},
-    five: {string: ' 5', value: 5},
-    six: {string: ' 6', value: 6},
-    seven: {string: ' 7', value: 7},
-    eight: {string: ' 8', value: 8},
-    nine: {string: ' 9', value: 9},
-    ten: {string: '10', value: 10},
-    jack: {string: ' J', value: 10},
-    queen: {string: ' Q', value: 10},
-    king: {string: ' K', value: 10},
-    ace: {string: ' A', value: nil}
+    two: { string: ' 2', value: 2 },
+    three: { string: ' 3', value: 3 },
+    four: { string: ' 4', value: 4 },
+    five: { string: ' 5', value: 5 },
+    six: { string: ' 6', value: 6 },
+    seven: { string: ' 7', value: 7 },
+    eight: { string: ' 8', value: 8 },
+    nine: { string: ' 9', value: 9 },
+    ten: { string: '10', value: 10 },
+    jack: { string: ' J', value: 10 },
+    queen: { string: ' Q', value: 10 },
+    king: { string: ' K', value: 10 },
+    ace: { string: ' A', value: nil }
   }.freeze
-  
+
   attr_reader :suit, :name
 
   def self.deck

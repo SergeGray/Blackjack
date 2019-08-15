@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Player
   attr_accessor :hand, :wallet
 
@@ -12,6 +14,10 @@ class Player
     end
   end
 
+  def effective_score
+    score > 21 ? 0 : score
+  end
+
   def hidden?
     @hidden
   end
@@ -19,9 +25,9 @@ class Player
   def show_hand
     @hidden = false
   end
-  
+
   def view_hand
-    hidden? ? @hand.map { "***" } : @hand
+    hidden? ? @hand.map { '***' } : @hand
   end
 
   private

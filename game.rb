@@ -12,7 +12,6 @@ class Game
   def initialize(player1, player2, bet = 10)
     @player1 = player1
     @player2 = player2
-    @playing = player1
     @bet = bet
     @bank = 0
   end
@@ -31,7 +30,7 @@ class Game
   end
 
   def open_cards
-    @revealed = players.select(&:hidden?).each(&:show_hand)
+    @revealed = players.select(&:hidden?).each(&:reveal_hand)
     tally
   end
 
@@ -74,8 +73,7 @@ class Game
   def arrange_table
     players.each do |player|
       player.hand = self.class.deck.pop(2)
-      player.cash -= @bet
-      @bank += @bet
+      make_bet(player)
     end
   end
 
@@ -84,12 +82,20 @@ class Game
   end
 
   def pay(player)
-    @bank -= @bet * 2
-    player.cash += @bet * 2
+    2.times { payout(player) }
   end
 
   def refund
-    @bank -= @bet * 2
-    players.each { |player| player.cash += @bet }
+    players.each { |player| payout(player) }
+  end
+
+  def make_bet(player)
+    player.cash -= @bet
+    @bank += @bet
+  end
+
+  def payout(player)
+    @bank -= @bet
+    player.cash += @bet
   end
 end

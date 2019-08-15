@@ -25,12 +25,26 @@ class Player
     @hidden
   end
 
-  def show_hand
+  def reveal_hand
     @hidden = false
   end
 
   def hide_hand
     @hidden = true
+  end
+
+  def hand_full?
+    @hand.size == 3
+  end
+
+  def to_s
+    "#{@name}'s hand: #{view_hand}, score: #{view_score}"
+  end
+
+  private
+
+  def ace_count(score)
+    score > 10 ? 1 : 11
   end
 
   def view_hand
@@ -39,15 +53,5 @@ class Player
 
   def view_score
     hidden? ? '**' : score
-  end
-
-  def hand_full?
-    @hand.size == 3
-  end
-
-  private
-
-  def ace_count(score)
-    score > 10 ? 1 : 11
   end
 end

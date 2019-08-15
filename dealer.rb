@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 class Dealer < Player
   def initialize
-    super("Dealer", 1_000_000, hidden: true)
+    super('Dealer', 1_000_000, hidden: true)
   end
 
   def effective_score

@@ -10,18 +10,24 @@ class Blackjack
   OPTIONS = %i[open_cards stand hit].freeze
 
   def initialize
-    @player = Player.new('Player')
     @dealer = Dealer.new
-    @game = Game.new(@player, @dealer)
-    @game.start
   end
 
   def main
+    enter unless @game
+
     @game.over? ? winner_notice : action
     main
   end
 
   private
+
+  def enter
+    puts 'Enter your name'
+    @player = Player.new(gets.chomp)
+    @game = Game.new(@player, @dealer)
+    @game.start
+  end
 
   def menu
     @player.hand_full? ? MENU[0...-1] : MENU
@@ -58,10 +64,6 @@ class Blackjack
   end
 
   def game_state
-    [
-      "Dealer's hand: #{@dealer.view_hand}, score: #{@dealer.view_score}",
-      "Your hand: #{@player.view_hand}, score: #{@player.view_score}",
-      "Cash: #{@player.cash}, bank: #{@game.bank}"
-    ]
+    [@dealer, @player, "Cash: #{@player.cash}, bank: #{@game.bank}"]
   end
 end

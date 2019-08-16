@@ -26,6 +26,7 @@ class Game
 
   def hit
     @playing.hand << self.class.deck.pop unless @playing.hand_full?
+    open_cards if other_player(@playing).hand_full?
     next_turn
   end
 

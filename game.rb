@@ -1,17 +1,12 @@
 # frozen_string_literal: true
 
 class Game
-  attr_reader :playing, :bank
-
-  class << self
-    attr_accessor :deck
-  end
-
-  @deck = Card.deck
+  attr_reader :playing, :bank, :deck
 
   def initialize(player1, player2, bet = 10)
     @player1 = player1
     @player2 = player2
+    @deck = Deck.new
     @bet = bet
     @bank = 0
   end
@@ -25,8 +20,8 @@ class Game
   end
 
   def hit
-    @playing.hand << self.class.deck.pop unless @playing.hand_full?
-    open_cards if other_player(@playing).hand_full?
+    @playing.hand.grab(@deck.draw) unless @playing.hand.full?
+    open_cards if other_player(@playing).hand.full?
     next_turn
   end
 
@@ -45,7 +40,7 @@ class Game
     hide_cards
     shuffle_deck
     @playing = @player1
-    arrange_table
+    deal
   end
 
   def over?
@@ -67,13 +62,13 @@ class Game
   end
 
   def shuffle_deck
-    players.each { |player| self.class.deck += player.hand.pop(3) }
-    self.class.deck.shuffle!
+    players.each { |player| @deck.retrieve(player.hand.discard) }
+    @deck.shuffle
   end
 
-  def arrange_table
+  def deal
     players.each do |player|
-      player.hand = self.class.deck.pop(2)
+      player.hand.grab(@deck.draw(2))
       make_bet(player)
     end
   end

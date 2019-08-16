@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative 'blackjack.rb'
+require_relative 'interface.rb'
 
-blackjack = Blackjack.new
-blackjack.main
+interface = Interface.new(:gets, :puts)
+interface.main

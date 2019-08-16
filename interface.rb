@@ -1,15 +1,19 @@
 # frozen_string_literal: true
 
 require_relative 'card.rb'
+require_relative 'deck.rb'
+require_relative 'hand.rb'
 require_relative 'player.rb'
 require_relative 'dealer.rb'
 require_relative 'game.rb'
 
-class Blackjack
+class Interface
   MENU = ['0. Open cards', '1. Stand', '2. Hit'].freeze
   OPTIONS = %i[open_cards stand hit].freeze
 
-  def initialize
+  def initialize(input, output)
+    @input = input
+    @output = output
     @dealer = Dealer.new
   end
 
@@ -22,19 +26,27 @@ class Blackjack
 
   private
 
+  def input
+    send(@input)
+  end
+
+  def output(*params)
+    send(@output, *params)
+  end
+
   def enter
-    puts 'Enter your name'
-    @player = Player.new(gets.chomp)
+    output('Enter your name')
+    @player = Player.new(input.chomp)
     @game = Game.new(@player, @dealer)
     @game.start
   end
 
   def menu
-    @player.hand_full? ? MENU[0...-1] : MENU
+    @player.hand.full? ? MENU[0...-1] : MENU
   end
 
   def options
-    @player.hand_full? ? OPTIONS[0...-1] : OPTIONS
+    @player.hand.full? ? OPTIONS[0...-1] : OPTIONS
   end
 
   def action
@@ -42,9 +54,8 @@ class Blackjack
   end
 
   def request_input
-    puts game_state
-    puts menu
-    @game.public_send options[gets.to_i] || :do_nothing
+    output(game_state, menu)
+    @game.public_send options[input.to_i] || :do_nothing
   end
 
   def dealer_logic
@@ -52,14 +63,14 @@ class Blackjack
   end
 
   def winner_notice
-    puts game_state
-    puts @game.winner ? "#{@game.winner.name} wins!" : 'Tie!'
+    output(game_state)
+    output(@game.winner ? "#{@game.winner.name} wins!" : 'Tie!')
     play_again
   end
 
   def play_again
-    puts 'Input y to play again or anything else to exit'
-    abort if gets.chomp !~ /\s*y\s*/i
+    output('Input y to play again or anything else to exit')
+    abort if input.chomp !~ /\s*y\s*/i
     @game.start
   end
 

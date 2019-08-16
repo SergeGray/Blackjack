@@ -50,16 +50,8 @@ class Interface
   end
 
   def action
-    @game.playing == @player ? request_input : dealer_logic
-  end
-
-  def request_input
     output(game_state, menu)
     @game.public_send options[input.to_i] || :do_nothing
-  end
-
-  def dealer_logic
-    @dealer.score < 17 ? @game.hit : @game.stand
   end
 
   def winner_notice

@@ -18,6 +18,10 @@ class Player
     score > 21 ? 0 : score
   end
 
+  def dealer?
+    false
+  end
+
   def hidden?
     @hand.hidden?
   end

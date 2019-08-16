@@ -17,6 +17,7 @@ class Game
 
   def next_turn
     @playing = other_player(@playing)
+    dealer_logic if @playing.dealer?
   end
 
   def hit
@@ -55,6 +56,10 @@ class Game
 
   def tally
     winner ? pay(winner) : refund
+  end
+
+  def dealer_logic
+    @playing.score < 17 ? hit : stand
   end
 
   def hide_cards

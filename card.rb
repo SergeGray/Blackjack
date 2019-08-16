@@ -20,7 +20,7 @@ class Card
     jack: { string: ' J', value: 10 },
     queen: { string: ' Q', value: 10 },
     king: { string: ' K', value: 10 },
-    ace: { string: ' A', value: nil }
+    ace: { string: ' A', value: 11 }
   }.freeze
 
   attr_reader :suit, :name
@@ -40,6 +40,10 @@ class Card
 
   def ace?
     @name == :ace
+  end
+
+  def <=>(other)
+    other.value <=> value
   end
 
   def to_s

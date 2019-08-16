@@ -43,7 +43,7 @@ class Card
   end
 
   def <=>(other)
-    other.value <=> value
+    value <=> other.value
   end
 
   def to_s

@@ -12,9 +12,10 @@ class Player
   end
 
   def score
-    @hand.sort.reduce(0) do |score, card|
-      score + (card.ace? ? ace_count(score) : card.value)
+    non_ace = @hand.reject(&:ace?).reduce(0) do |total, card|
+      total + card.value
     end
+    non_ace + ace_value(@hand.count(&:ace?), non_ace)
   end
 
   def effective_score
@@ -43,8 +44,10 @@ class Player
 
   private
 
-  def ace_count(score)
-    score > 10 ? 1 : 11
+  def ace_value(ace_count, total)
+    return ace_count if ace_count.zero?
+
+    total > 11 - ace_count ? ace_count : 10 + ace_count
   end
 
   def view_hand

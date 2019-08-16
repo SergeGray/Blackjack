@@ -12,10 +12,7 @@ class Player
   end
 
   def score
-    non_ace = @hand.reject(&:ace?).reduce(0) do |total, card|
-      total + card.value
-    end
-    non_ace + ace_value(@hand.count(&:ace?), non_ace)
+    non_ace_value + ace_value
   end
 
   def effective_score
@@ -44,10 +41,18 @@ class Player
 
   private
 
-  def ace_value(ace_count, total)
+  def non_ace_value
+    @hand.reject(&:ace?).reduce(0) { |total, card| total + card.value }
+  end
+
+  def ace_value
     return ace_count if ace_count.zero?
 
-    total > 11 - ace_count ? ace_count : 10 + ace_count
+    non_ace_value > 11 - ace_count ? ace_count : 10 + ace_count
+  end
+
+  def ace_count
+    @hand.count(&:ace?)
   end
 
   def view_hand

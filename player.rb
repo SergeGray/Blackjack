@@ -45,6 +45,6 @@ class Player
   end
 
   def view_score
-    @hand.hidden? ? '**' : score
+    hidden? ? '**' : score
   end
 end

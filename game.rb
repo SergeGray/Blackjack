@@ -3,44 +3,39 @@
 class Game
   attr_reader :playing, :bank, :deck
 
-  def initialize(player1, player2, bet = 10)
-    @player1 = player1
-    @player2 = player2
+  def initialize(*players, bet: 10)
+    @players = players
     @deck = Deck.new
     @bet = bet
     @bank = 0
   end
 
-  def players
-    [@player1, @player2]
-  end
-
   def next_turn
-    @playing = other_player(@playing)
+    @playing = next_player(@playing)
     dealer_logic if @playing.dealer?
   end
 
   def hit
     @playing.hand.grab(@deck.draw) unless @playing.hand.full?
-    open_cards if other_player(@playing).hand.full?
+    open_cards if next_player(@playing).hand.full?
     next_turn
   end
 
   def open_cards
-    @revealed = players.select(&:hidden?).each(&:reveal_hand)
+    @revealed = @players.select(&:hidden?).each(&:reveal_hand)
     tally
   end
 
   def winner
-    players.find do |player|
-      player.effective_score > other_player(player).effective_score
+    @players.find do |player|
+      player.effective_score > next_player(player).effective_score
     end
   end
 
   def start
     hide_cards
     shuffle_deck
-    @playing = @player1
+    @playing = @players[0]
     deal
   end
 
@@ -67,27 +62,27 @@ class Game
   end
 
   def shuffle_deck
-    players.each { |player| @deck.retrieve(player.hand.discard) }
+    @players.each { |player| @deck.retrieve(player.hand.discard) }
     @deck.shuffle
   end
 
   def deal
-    players.each do |player|
+    @players.each do |player|
       player.hand.grab(@deck.draw(2))
       make_bet(player)
     end
   end
 
-  def other_player(player)
-    player == @player1 ? @player2 : @player1
+  def next_player(player)
+    @players.at(@players.index(player).next) || @players[0]
   end
 
   def pay(player)
-    2.times { payout(player) }
+    @players.size.times { payout(player) }
   end
 
   def refund
-    players.each { |player| payout(player) }
+    @players.each { |player| payout(player) }
   end
 
   def make_bet(player)

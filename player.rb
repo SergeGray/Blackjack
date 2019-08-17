@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 class Player
-  attr_accessor :hand, :cash
-  attr_reader :name
+  attr_accessor :hand
+  attr_reader :name, :wallet
 
   def initialize(name, cash = 100, hidden: false)
     @name = name
-    @cash = cash
+    @wallet = MoneyAccount.new(cash)
     @hand = Hand.new(hidden: hidden)
   end
 

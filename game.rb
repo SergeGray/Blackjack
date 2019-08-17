@@ -5,11 +5,9 @@ require_relative 'deck.rb'
 require_relative 'hand.rb'
 require_relative 'player.rb'
 require_relative 'dealer.rb'
-require_relative 'payment.rb'
+require_relative 'money_account.rb'
 
 class Game
-  include Payment
-
   TURNS = %i[open_cards stand hit].freeze
 
   attr_reader :playing, :bank, :deck
@@ -18,8 +16,8 @@ class Game
     @interface = interface
     @deck = Deck.new
     @dealer = Dealer.new
+    @bank = MoneyAccount.new
     @bet = bet
-    @bank = 0
   end
 
   def main
@@ -61,7 +59,7 @@ class Game
   def deal
     @players.each do |player|
       player.hand.grab(@deck.draw(2))
-      make_bet(player)
+      player.wallet.transfer(@bank, @bet)
     end
   end
 
@@ -75,7 +73,7 @@ class Game
   end
 
   def state
-    @players.reverse + ["Cash: #{@player.cash}, bank: #{bank}"]
+    @players.reverse + ["Cash: #{@player.wallet}, bank: #{@bank}"]
   end
 
   def next_turn
@@ -109,7 +107,7 @@ class Game
   end
 
   def over?
-    @bank.zero?
+    @bank.empty?
   end
 
   def do_nothing; end
@@ -129,5 +127,13 @@ class Game
   def play_again
     endgame_notice
     @interface.play_again ? start : abort
+  end
+
+  def pay(player)
+    @players.size.times { @bank.transfer(player.wallet, @bet) }
+  end
+
+  def refund
+    @players.each { |player| @bank.transfer(player.wallet, @bet) }
   end
 end

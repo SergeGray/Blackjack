@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
+require_relative 'game.rb'
 require_relative 'interface.rb'
 
-interface = Interface.new(:gets, :puts)
-interface.main
+game = Game.new(interface: Interface.new)
+game.main

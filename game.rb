@@ -1,19 +1,60 @@
 # frozen_string_literal: true
 
+require_relative 'card.rb'
+require_relative 'deck.rb'
+require_relative 'hand.rb'
+require_relative 'player.rb'
+require_relative 'dealer.rb'
+
 class Game
   attr_reader :playing, :bank, :deck
 
-  def initialize(*players, bet: 10)
-    @players = players
+  def initialize(interface:, bet: 10)
+    @interface = interface
     @deck = Deck.new
+    @dealer = Dealer.new
     @bet = bet
     @bank = 0
+  end
+
+  def main
+    enter unless entered?
+    
+    @interface.output(state)
+    over? ? play_again : action
+    main
+  end
+
+  private
+
+  def enter
+    @player = Player.new(@interface.name)
+    @players = [@player, @dealer]
+    start
+  end
+
+  def entered?
+    @player ? true : false
+  end
+
+  def action
+    send menu || :do_nothing
+  end
+
+  def menu
+    @player.hand.full? ? @interface.open_menu : @interface.menu
+  end
+
+  def state
+    @players.reverse + ["Cash: #{@player.cash}, bank: #{bank}"]
   end
 
   def next_turn
     @playing = next_player(@playing)
     dealer_logic if @playing.dealer?
   end
+
+  alias stand next_turn
 
   def hit
     @playing.hand.grab(@deck.draw) unless @playing.hand.full?
@@ -32,11 +73,20 @@ class Game
     end
   end
 
+  def endgame_notice
+    winner ? "#{winner.name} wins!" : 'Tie!'
+  end
+
   def start
     hide_cards
     shuffle_deck
-    @playing = @players[0]
+    @playing = @player
     deal
+  end
+
+  def play_again
+    @interface.output(endgame_notice)
+    @interface.play_again ? start : abort
   end
 
   def over?
@@ -44,10 +94,6 @@ class Game
   end
 
   def do_nothing; end
-
-  alias stand next_turn
-
-  private
 
   def tally
     winner ? pay(winner) : refund

@@ -1,30 +1,35 @@
 # frozen_string_literal: true
 
-class Interface
+class TerminalInterface
   MENU = ['0. Open cards', '1. Stand', '2. Hit'].freeze
-  OPTIONS = %i[open_cards stand hit].freeze
 
   def input
     gets
   end
 
   def output(*params)
-    puts *params
+    puts params
   end
 
   def name
-    puts "Enter your name"
+    puts 'Enter your name'
     gets.chomp
   end
 
   def menu
     puts MENU
-    OPTIONS[gets.to_i]
   end
 
   def open_menu
     puts MENU[0...-1]
-    OPTIONS[0...-1][gets.to_i]
+  end
+
+  def win_message(winner)
+    puts "#{winner.name} wins!"
+  end
+
+  def tie_message
+    puts 'Tie!'
   end
 
   def play_again

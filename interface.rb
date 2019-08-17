@@ -20,6 +20,7 @@ class Interface
   def main
     enter unless @game
 
+    output(game_state)
     @game.over? ? winner_notice : action
     main
   end
@@ -50,12 +51,11 @@ class Interface
   end
 
   def action
-    output(game_state, menu)
+    output(menu)
     @game.public_send options[input.to_i] || :do_nothing
   end
 
   def winner_notice
-    output(game_state)
     output(@game.winner ? "#{@game.winner.name} wins!" : 'Tie!')
     play_again
   end

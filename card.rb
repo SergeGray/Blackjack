@@ -25,10 +25,6 @@ class Card
 
   attr_reader :suit, :name
 
-  def self.deck
-    SUITS.map { |suit, _| NOMINALS.map { |name, _| new(suit, name) } }.flatten
-  end
-
   def initialize(suit, name)
     @suit = suit
     @name = name

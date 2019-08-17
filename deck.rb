@@ -4,7 +4,12 @@ class Deck
   attr_reader :cards
 
   def initialize
-    @cards = Card.deck
+    @cards = []
+    Card::SUITS.each do |suit, _|
+      Card::NOMINALS.each do |name, _|
+        @cards << Card.new(suit, name)
+      end
+    end
   end
 
   def shuffle

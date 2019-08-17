@@ -3,17 +3,17 @@
 class TerminalInterface
   MENU = ['0. Open cards', '1. Stand', '2. Hit'].freeze
 
-  def input
-    gets
-  end
-
-  def output(*params)
-    puts params
-  end
-
   def name
     puts 'Enter your name'
     gets.chomp
+  end
+
+  def state_message(player, dealer, bank)
+    [dealer, player].map do |player|
+      puts "#{player.name}'s hand: #{player.view_hand}, "\
+           "score: #{player.view_score}"
+    end
+    puts "cash: #{player.wallet}, bank: #{bank}"
   end
 
   def menu
@@ -22,6 +22,10 @@ class TerminalInterface
 
   def open_menu
     puts MENU[0...-1]
+  end
+
+  def choice
+    gets.to_i
   end
 
   def win_message(winner)

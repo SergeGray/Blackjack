@@ -18,7 +18,7 @@ class Game
   def main
     enter unless entered?
 
-    @interface.output(state)
+    @interface.state_message(@player, @dealer, @bank)
     over? ? play_again : action
     main
   end
@@ -60,7 +60,7 @@ class Game
 
   def action
     menu
-    send TURNS[@interface.input.to_i] || :do_nothing
+    send TURNS[@interface.choice] || :do_nothing
   end
 
   def next_turn

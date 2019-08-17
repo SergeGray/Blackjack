@@ -1,12 +1,10 @@
 # frozen_string_literal: true
 
 module GameHelper
+  private
+    
   def menu
     @player.hand.full? ? @interface.open_menu : @interface.menu
-  end
-
-  def state
-    @players.reverse + ["Cash: #{@player.wallet}, bank: #{@bank}"]
   end
 
   def over?

@@ -34,12 +34,6 @@ class Player
     @hand.reveal
   end
 
-  def to_s
-    "#{@name}'s hand: #{view_hand}, score: #{view_score}"
-  end
-
-  private
-
   def view_hand
     @hand.view
   end

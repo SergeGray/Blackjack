@@ -9,6 +9,7 @@ class MoneyAccount
 
   def transfer(to, amount)
     raise ArgumentError, 'Not enough money in the account' if @cash < amount
+
     @cash -= amount
     to.cash += amount
   end
@@ -18,7 +19,7 @@ class MoneyAccount
   end
 
   def to_s
-    "#{@cash}"
+    @cash.to_s
   end
 
   protected

@@ -1,13 +1,8 @@
 # frozen_string_literal: true
 
-require_relative 'card.rb'
-require_relative 'deck.rb'
-require_relative 'hand.rb'
-require_relative 'player.rb'
-require_relative 'dealer.rb'
-require_relative 'money_account.rb'
-
 class Game
+  include GameHelper
+
   TURNS = %i[open_cards stand hit].freeze
 
   attr_reader :playing, :bank, :deck
@@ -68,14 +63,6 @@ class Game
     send TURNS[@interface.input.to_i] || :do_nothing
   end
 
-  def menu
-    @player.hand.full? ? @interface.open_menu : @interface.menu
-  end
-
-  def state
-    @players.reverse + ["Cash: #{@player.wallet}, bank: #{@bank}"]
-  end
-
   def next_turn
     @playing = other_player
     dealer_logic if @playing.dealer?
@@ -106,12 +93,6 @@ class Game
     end
   end
 
-  def over?
-    @bank.empty?
-  end
-
-  def do_nothing; end
-
   def tally
     winner ? pay(winner) : refund
   end
@@ -120,13 +101,15 @@ class Game
     @playing.score < 17 ? hit : stand
   end
 
-  def endgame_notice
-    winner ? @interface.win_message(winner) : @interface.tie_message
-  end
-
   def play_again
     endgame_notice
+    bankrupt if @player.wallet.empty?
     @interface.play_again ? start : abort
+  end
+
+  def bankrupt
+    @interface.bankrupt
+    abort
   end
 
   def pay(player)

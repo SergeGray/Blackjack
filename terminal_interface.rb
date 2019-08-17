@@ -36,4 +36,8 @@ class TerminalInterface
     puts 'Input y to play again or anything else to exit'
     gets.chomp.match?(/^\s*y\s*$/i)
   end
+
+  def bankrupt
+    puts 'Not enough money to play. The game will now exit'
+  end
 end

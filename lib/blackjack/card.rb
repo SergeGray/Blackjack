@@ -27,6 +27,9 @@ module Blackjack
     attr_reader :suit, :name
 
     def initialize(suit, name)
+      raise ArgumentError, 'Invalid suit' unless SUITS.keys.include?(suit)
+      raise ArgumentError, 'Invalid name' unless NOMINALS.keys.include?(name)
+
       @suit = suit
       @name = name
     end
@@ -37,10 +40,6 @@ module Blackjack
 
     def ace?
       @name == :ace
-    end
-
-    def <=>(other)
-      value <=> other.value
     end
 
     def to_s

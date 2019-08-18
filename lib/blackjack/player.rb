@@ -1,44 +1,46 @@
 # frozen_string_literal: true
 
-class Player
-  attr_accessor :hand
-  attr_reader :name, :wallet
+module Blackjack
+  class Player
+    attr_accessor :hand
+    attr_reader :name, :wallet
 
-  def initialize(name, cash = 100, hidden: false)
-    @name = name
-    @wallet = MoneyAccount.new(cash)
-    @hand = Hand.new(hidden: hidden)
-  end
+    def initialize(name, cash = 100, hidden: false)
+      @name = name
+      @wallet = MoneyAccount.new(cash)
+      @hand = Hand.new(hidden: hidden)
+    end
 
-  def score
-    @hand.score
-  end
+    def score
+      @hand.score
+    end
 
-  def effective_score
-    score > 21 ? 0 : score
-  end
+    def effective_score
+      score > 21 ? 0 : score
+    end
 
-  def dealer?
-    false
-  end
+    def dealer?
+      false
+    end
 
-  def hidden?
-    @hand.hidden?
-  end
+    def hidden?
+      @hand.hidden?
+    end
 
-  def hide_hand
-    @hand.hide
-  end
+    def hide_hand
+      @hand.hide
+    end
 
-  def reveal_hand
-    @hand.reveal
-  end
+    def reveal_hand
+      @hand.reveal
+    end
 
-  def view_hand
-    @hand.view
-  end
+    def view_hand
+      @hand.view
+    end
 
-  def view_score
-    hidden? ? '**' : score
+    def view_score
+      hidden? ? '**' : score
+    end
   end
 end

@@ -1,19 +1,21 @@
 # frozen_string_literal: true
 
-module GameHelper
-  private
-    
-  def menu
-    @player.hand.full? ? @interface.open_menu : @interface.menu
-  end
+module Blackjack
+  module GameHelper
+    private
 
-  def over?
-    @bank.empty?
-  end
+    def menu
+      @player.hand.full? ? @interface.open_menu : @interface.menu
+    end
 
-  def do_nothing; end
+    def over?
+      @bank.empty?
+    end
 
-  def endgame_notice
-    winner ? @interface.win_message(winner) : @interface.tie_message
+    def do_nothing; end
+
+    def endgame_notice
+      winner ? @interface.win_message(winner) : @interface.tie_message
+    end
   end
 end

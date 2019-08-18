@@ -1,47 +1,49 @@
 # frozen_string_literal: true
 
-class TerminalInterface
-  MENU = ['0. Open cards', '1. Stand', '2. Hit'].freeze
+module Blackjack
+  class TerminalInterface
+    MENU = ['0. Open cards', '1. Stand', '2. Hit'].freeze
 
-  def name
-    puts 'Enter your name'
-    gets.chomp
-  end
-
-  def state_message(player, dealer, bank)
-    [dealer, player].map do |player|
-      puts "#{player.name}'s hand: #{player.view_hand}, "\
-           "score: #{player.view_score}"
+    def name
+      puts 'Enter your name'
+      gets.chomp
     end
-    puts "cash: #{player.wallet}, bank: #{bank}"
-  end
 
-  def menu
-    puts MENU
-  end
+    def state_message(player, dealer, bank)
+      [dealer, player].map do |participant|
+        puts "#{participant.name}'s hand: #{participant.view_hand}, "\
+            "score: #{participant.view_score}"
+      end
+      puts "cash: #{player.wallet}, bank: #{bank}"
+    end
 
-  def open_menu
-    puts MENU[0...-1]
-  end
+    def menu
+      puts MENU
+    end
 
-  def choice
-    gets.to_i
-  end
+    def open_menu
+      puts MENU[0...-1]
+    end
 
-  def win_message(winner)
-    puts "#{winner.name} wins!"
-  end
+    def choice
+      gets.to_i
+    end
 
-  def tie_message
-    puts 'Tie!'
-  end
+    def win_message(winner)
+      puts "#{winner.name} wins!"
+    end
 
-  def play_again
-    puts 'Input y to play again or anything else to exit'
-    gets.chomp.match?(/^\s*y\s*$/i)
-  end
+    def tie_message
+      puts 'Tie!'
+    end
 
-  def bankrupt
-    puts 'Not enough money to play. The game will now exit'
+    def play_again
+      puts 'Input y to play again or anything else to exit'
+      gets.chomp.match?(/^\s*y\s*$/i)
+    end
+
+    def bankrupt
+      puts 'Not enough money to play. The game will now exit'
+    end
   end
 end

@@ -8,7 +8,7 @@ module Blackjack
 
     attr_reader :playing, :bank, :deck
 
-    def initialize(interface:, bet: 10)
+    def initialize(interface: TerminalInterface.new, bet: 10)
       @interface = interface
       @deck = Deck.new
       @dealer = Dealer.new

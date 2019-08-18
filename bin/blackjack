@@ -4,5 +4,5 @@
 $LOAD_PATH.unshift File.expand_path('lib', __dir__)
 require 'codebreaker'
 
-game = Blackjack::Game.new(interface: Blackjack::TerminalInterface.new)
+game = Blackjack::Game.new
 game.main

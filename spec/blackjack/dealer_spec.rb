@@ -5,12 +5,6 @@ require 'spec_helper'
 module Blackjack
   describe Dealer do
     let(:dealer) { Dealer.new }
-    
-    describe '#dealer?' do
-      it 'returns true for dealer' do
-        expect(dealer.dealer?).to be true
-      end
-    end
 
     describe '#effective_score' do
       it 'returns score if score is equal or less than 21' do

@@ -20,7 +20,8 @@ module Blackjack
       enter unless entered?
 
       @interface.state_message(@player, @dealer, @bank)
-      over? ? play_again : action
+      over? ? return : action
+
       main
     end
 
@@ -96,6 +97,7 @@ module Blackjack
 
     def tally
       winner ? pay(winner) : refund
+      play_again
     end
 
     def dealer_logic
@@ -105,12 +107,11 @@ module Blackjack
     def play_again
       endgame_notice
       bankrupt if @player.wallet.empty?
-      @interface.play_again ? start : abort
+      start if @interface.play_again
     end
 
     def bankrupt
       @interface.bankrupt
-      abort
     end
 
     def pay(player)

@@ -20,9 +20,10 @@ module Blackjack
       enter unless entered?
 
       @interface.state_message(@player, @dealer, @bank)
-      over? ? return : action
-
-      main
+      catch(:quit) do
+        over? ? play_again : action
+        main
+      end
     end
 
     private
@@ -57,6 +58,8 @@ module Blackjack
       @players.each do |player|
         player.hand.grab(@deck.draw(2))
         player.wallet.transfer(@bank, @bet)
+      rescue ArgumentError
+        bankrupt
       end
     end
 
@@ -97,7 +100,6 @@ module Blackjack
 
     def tally
       winner ? pay(winner) : refund
-      play_again
     end
 
     def dealer_logic
@@ -106,12 +108,12 @@ module Blackjack
 
     def play_again
       endgame_notice
-      bankrupt if @player.wallet.empty?
-      start if @interface.play_again
+      @interface.play_again ? start : throw(:quit)
     end
 
     def bankrupt
       @interface.bankrupt
+      throw(:quit)
     end
 
     def pay(player)

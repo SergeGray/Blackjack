@@ -15,22 +15,11 @@ module Blackjack
 
     describe '#main' do
       context 'upon entering' do
-        before(:each) do
+        it 'asks for a name input' do
           allow(game).to receive(:start)
           allow(game).to receive(:play_again).and_throw(:quit)
-        end
-
-        after(:each) do
+          expect(interface).to receive(:name)
           game.main
-        end
-
-        it 'calls Game#enter' do
-          expect(game).to receive(:enter)
-        end
-
-        it 'enters and starts the game' do
-          allow(interface).to receive(:name).and_return('Bob')
-          expect(game).to receive(:start)
         end
       end
 
@@ -40,34 +29,39 @@ module Blackjack
           allow(game).to receive(:action).and_throw(:quit)
         end
 
-        it 'attempts to hide previously revealed cards' do
-          expect(game).to receive(:hide_cards)
+        it 'sends a game state message' do
+          expect(interface).to receive(:state_message)
           game.main
         end
 
-        it 'shuffles the deck' do
-          expect(game).to receive(:shuffle_deck)
+        it "hides dealer's cards and score" do
+          allow(interface).to receive(:state_message).with(
+            any_args
+          ) do |_player, dealer, _bank|
+            expect(dealer.view_hand).to eq("*** ***")
+            expect(dealer.view_score).to eq("**")
+          end
           game.main
-        end
-
-        it 'assigns current player' do
-          game.main
-          expect(game.playing).to_not be_nil
         end
 
         it 'gives players 2 cards each' do
+          allow(interface).to receive(:state_message).with(
+            any_args
+          ) do |player, dealer, _bank|
+            expect(player.hand.cards.length).to eq(dealer.hand.cards.length)
+          end
           game.main
-          expect(game.playing.hand.cards.count).to eq(2)
         end
 
-        it "takes bet from players' wallets" do
+        it "puts bets from players' wallets into the bank" do
+          allow(interface).to receive(:state_message).with(
+            any_args
+          ) do |player, dealer, bank|
+            expect(player.wallet.cash).to eq(90)
+            expect(dealer.wallet.cash).to eq(1_000_000-10)
+            expect(bank.cash).to eq(20)
+          end
           game.main
-          expect(game.playing.wallet.cash).to eq(90)
-        end
-
-        it 'puts all the bets into the bank' do
-          game.main
-          expect(game.bank.cash).to eq(20)
         end
       end
 
@@ -78,8 +72,9 @@ module Blackjack
         end
 
         it "doesn't do anything with wrong input" do
-          allow(interface).to receive(:choice).and_return(12, 1)
-          expect(game).to receive(:do_nothing)
+          allow(interface).to receive(:choice).and_return(12, 12, 0)
+          expect(interface).to receive(:choice).exactly(3).times
+          expect(game).to_not receive(:dealer_logic)
           game.main
         end
 

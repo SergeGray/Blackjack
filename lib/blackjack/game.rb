@@ -58,9 +58,9 @@ module Blackjack
       @players.each do |player|
         player.hand.grab(@deck.draw(2))
         player.wallet.transfer(@bank, @bet)
-      rescue ArgumentError
-        bankrupt
       end
+    rescue ArgumentError
+      bankrupt
     end
 
     def action
